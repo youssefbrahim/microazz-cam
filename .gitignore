@@ -1,0 +1,20 @@
+node_modules/
+out/
+dist/
+release/
+*.log
+.DS_Store
+.vite/
+tsconfig.tsbuildinfo
+*.tsbuildinfo
+
+# Credenciais locais — nunca versionar.
+#
+# O repositório é público. Uma chave do Google publicada num repositório
+# público é encontrada por robôs em minutos, e o próprio Google costuma
+# revogá-la automaticamente — o envio ao Drive pararia de funcionar em todos os
+# clientes de uma vez. As credenciais entram no .exe durante o build (isso é
+# inevitável e previsto pelo Google), mas não no código-fonte publicado.
+google-oauth.json
+.env
+.env.local

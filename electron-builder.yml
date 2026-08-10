@@ -1,0 +1,48 @@
+appId: br.com.microazz.cam
+productName: Microazz Cam
+copyright: © Microazz
+
+directories:
+  buildResources: build
+  output: release/${version}
+
+files:
+  - out/**
+  - package.json
+
+# Compressão máxima: o instalador é baixado por conexões de consultório, que
+# nem sempre são boas.
+compression: maximum
+
+win:
+  icon: build/icon.png
+  # Sem certificado digital (que custaria ~R$1.000/ano), o Windows mostra o
+  # aviso "Editor desconhecido" na primeira instalação. O manual explica ao
+  # usuário como prosseguir; o aviso some conforme o arquivo ganha reputação.
+  #
+  # `signExecutable: false` pula só a assinatura. Cuidado para não trocar por
+  # `signAndEditExecutable: false`, que pularia junto a gravação do ícone e dos
+  # dados de versão, e o programa ficaria com o ícone genérico do Electron.
+  signExecutable: false
+  target:
+    - target: nsis
+      arch: [x64]
+
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: Microazz Cam
+  deleteAppDataOnUninstall: false
+  installerLanguages:
+    - pt_BR
+  language: '1046'
+
+# Atualização automática pelo GitHub Releases. Repositório público, sem token.
+publish:
+  provider: github
+  owner: youssefbrahim
+  repo: microazz-cam
+  releaseType: release

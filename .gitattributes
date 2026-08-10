@@ -1,0 +1,10 @@
+# Quebras de linha normalizadas: LF no repositório, CRLF no disco do Windows.
+# Sem isto, cada máquina reescreveria o arquivo inteiro e todo commit viraria
+# "mudou tudo", escondendo as alterações de verdade.
+* text=auto eol=lf
+
+# Binários não devem ser tocados.
+*.png binary
+*.ico binary
+*.woff binary
+*.woff2 binary

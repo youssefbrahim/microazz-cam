@@ -1,0 +1,196 @@
+/* A altura e o `overflow: hidden` vêm de `.screen--split`; aqui só as colunas. */
+.gallery {
+  grid-template-columns: 260px 1fr;
+}
+
+.gallery__side {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  padding: 16px 12px;
+  border-right: 1px solid var(--border);
+  background: var(--card);
+}
+
+.gallery__sidehead {
+  padding: 0 4px 10px;
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.7px;
+  text-transform: uppercase;
+}
+
+.gallery__exams {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.gallery__main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+/*
+ * Sem isto, a grade de fotos encolhe para caber na altura disponível em vez de
+ * rolar — itens de flex encolhem por padrão. Com muitas fotos no exame, as
+ * miniaturas ficavam espremidas e as últimas, inalcançáveis.
+ */
+.gallery__main > * {
+  flex-shrink: 0;
+}
+
+.gallery__head {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  padding: 24px 28px 14px;
+}
+
+.gallery__filters {
+  display: flex;
+  gap: 6px;
+  margin-left: auto;
+}
+
+.gchip {
+  padding: 6px 13px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--card);
+  color: var(--text-muted);
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+.gchip:hover {
+  border-color: var(--primary);
+  color: var(--text);
+}
+
+.gchip--on {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: #fff;
+}
+
+.gallery__actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin: 0 28px 16px;
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--card);
+}
+
+.gallery__count {
+  flex: 1;
+  color: var(--text-muted);
+  font-size: 12.5px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 14px;
+  padding: 0 28px 40px;
+}
+
+.gcard {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--card);
+  box-shadow: var(--shadow-card);
+}
+
+.gcard__preview {
+  display: block;
+  width: 100%;
+  height: 150px;
+  padding: 0;
+  border: 0;
+  background: #0f172a;
+}
+
+.gcard__preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.gcard__icon {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  place-items: center;
+  color: #94a3b8;
+}
+
+.gcard__pick {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  padding: 4px;
+  border-radius: 6px;
+  background: #0f172acc;
+  cursor: pointer;
+}
+
+.gcard__pick input {
+  display: block;
+  width: 16px;
+  height: 16px;
+  accent-color: var(--primary);
+  cursor: pointer;
+}
+
+.gcard__foot {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  padding: 8px 10px;
+}
+
+.gcard__name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--text-muted);
+  font-size: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.gcard__tools {
+  display: flex;
+  gap: 2px;
+}
+
+.gcard__tools button {
+  display: grid;
+  width: 26px;
+  height: 26px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-muted);
+  place-items: center;
+}
+
+.gcard__tools button:hover {
+  background: var(--primary-soft);
+  color: var(--primary);
+}
+
+.gcard__danger:hover {
+  background: #ef44442e !important;
+  color: #fca5a5 !important;
+}

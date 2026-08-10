@@ -1,0 +1,126 @@
+/*
+ * Tokens visuais do Microazz Cam.
+ *
+ * O azul e a fonte vêm do app mobile (microvision/src/lib/theme.ts), para que os
+ * dois produtos pareçam a mesma família. A diferença é o fundo: aqui tudo é
+ * escuro, do começo ao fim.
+ *
+ * Não é escolha de gosto. Imagem de microscópio é avaliada melhor sobre fundo
+ * escuro — telas claras ao redor forçam a pupila e alteram a percepção de cor e
+ * contraste do que está sendo examinado. É o padrão do ramo (Zeiss Labscope,
+ * ToupView) e o motivo de o consultório trabalhar com a luz baixa.
+ *
+ * Há três profundidades, da mais funda para a mais próxima:
+ *   --shell         barra lateral e palco da imagem ao vivo
+ *   --bg            fundo das telas de conteúdo
+ *   --card          cartões e campos sobre esse fundo
+ */
+
+/* Só o subconjunto latino: o pacote completo traz devanagari e outros
+   alfabetos que o app nunca usa e que pesariam meio megabyte no instalador. */
+@import '@fontsource/poppins/latin-400.css';
+@import '@fontsource/poppins/latin-500.css';
+@import '@fontsource/poppins/latin-600.css';
+@import '@fontsource/poppins/latin-700.css';
+@import '@fontsource/poppins/latin-800.css';
+
+:root {
+  /* Identidade Microazz */
+  --primary: #3b82f6;
+  --primary-dark: #2563eb;
+  /* Destaque suave: azul translúcido, que sobre fundo escuro cumpre o mesmo
+     papel do azul bem claro usado no app de celular. */
+  --primary-soft: #3b82f626;
+
+  /* Telas de conteúdo (pacientes, galeria, configurações, manual) */
+  --bg: #0e1626;
+  --card: #161f33;
+  --text: #e6edf7;
+  --text-muted: #94a3b8;
+  --border: #263349;
+
+  /* Barra lateral e palco da imagem ao vivo */
+  --shell: #0b1220;
+  --shell-raised: #131c2e;
+  --shell-border: #263349;
+  --shell-text: #e6edf7;
+  --shell-text-muted: #94a3b8;
+
+  /* Campos de digitação, um degrau abaixo do cartão para se destacarem dele */
+  --field: #0f1729;
+
+  --danger: #f87171;
+  --success: #4ade80;
+  --warning: #fbbf24;
+
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+
+  --shadow-card: 0 3px 10px rgb(30 41 59 / 6%);
+  --shadow-pop: 0 10px 30px rgb(15 23 42 / 18%);
+
+  --sidebar-width: 220px;
+  --topbar-height: 56px;
+
+  font-family: Poppins, 'Segoe UI', system-ui, sans-serif;
+  font-synthesis-weight: none;
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+body {
+  background: var(--shell);
+  color: var(--shell-text);
+  font-size: 14px;
+  line-height: 1.45;
+  /* Programa de captura: seleção de texto acidental atrapalha mais que ajuda. */
+  user-select: none;
+  -webkit-font-smoothing: antialiased;
+}
+
+input,
+textarea {
+  user-select: text;
+  font-family: inherit;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+/* Barra de rolagem discreta, combinando com o tema escuro. */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #33415580;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+  background-clip: content-box;
+}
+
+/* Foco visível é acessibilidade, não enfeite — o app é usado por teclado e pedal. */
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}

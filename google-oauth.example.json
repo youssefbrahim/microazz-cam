@@ -1,0 +1,15 @@
+{
+  "_comentario": [
+    "Copie este arquivo para 'google-oauth.json' (sem .example) e preencha com",
+    "as credenciais do Google Cloud. Esse arquivo NÃO vai para o GitHub — ele",
+    "está no .gitignore de propósito.",
+    "",
+    "Onde obter: console.cloud.google.com > APIs e serviços > Credenciais >",
+    "Criar credenciais > ID do cliente OAuth > tipo 'Aplicativo para computador'.",
+    "",
+    "Sem esse arquivo o programa compila e funciona normalmente; apenas o envio",
+    "ao Google Drive fica indisponível, e o próprio app avisa isso."
+  ],
+  "clientId": "",
+  "clientSecret": ""
+}

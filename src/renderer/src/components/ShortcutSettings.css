@@ -1,0 +1,133 @@
+.hint {
+  margin: 0 0 14px;
+  color: var(--text-muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.hint--dark {
+  color: var(--shell-text-muted);
+}
+
+.shortcuts {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13.5px;
+}
+
+.shortcuts th {
+  padding: 0 10px 8px 0;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+.shortcuts th:last-child,
+.shortcuts td:last-child {
+  width: 130px;
+  text-align: center;
+}
+
+.shortcuts th:nth-child(2),
+.shortcuts td:nth-child(2) {
+  width: 150px;
+}
+
+.shortcuts td {
+  padding: 9px 10px 9px 0;
+  border-bottom: 1px solid var(--border);
+  vertical-align: middle;
+}
+
+.shortcuts td small {
+  display: block;
+  color: var(--text-muted);
+  font-size: 11.5px;
+}
+
+.keycap {
+  min-width: 120px;
+  padding: 7px 12px;
+  border: 1px solid var(--border);
+  border-bottom-width: 3px;
+  border-radius: 8px;
+  background: var(--field);
+  color: var(--text);
+  font-size: 12.5px;
+  font-weight: 700;
+}
+
+.keycap:hover {
+  border-color: var(--primary);
+  background: var(--primary-soft);
+}
+
+.keycap--rec {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: #fff;
+  animation: blink 1s ease-in-out infinite;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0.65;
+  }
+}
+
+/* Chave liga/desliga */
+
+.switch {
+  display: inline-block;
+  position: relative;
+  width: 40px;
+  height: 22px;
+  cursor: pointer;
+}
+
+.switch input {
+  position: absolute;
+  opacity: 0;
+}
+
+.switch span {
+  display: block;
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  background: #334155;
+  transition: background 0.15s;
+}
+
+.switch span::after {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 16px;
+  height: 16px;
+  transition: transform 0.15s;
+  border-radius: 50%;
+  background: #fff;
+  content: '';
+}
+
+.switch input:checked + span {
+  background: var(--primary);
+}
+
+.switch input:checked + span::after {
+  transform: translateX(18px);
+}
+
+.pedalstate {
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--field);
+  font-size: 13px;
+  font-weight: 600;
+}

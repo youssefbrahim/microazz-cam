@@ -1,0 +1,41 @@
+{
+  "name": "microazz-cam",
+  "version": "1.0.0",
+  "description": "Microazz Cam — captura de fotos e vídeos de câmeras de microscópio USB",
+  "main": "./out/main/index.js",
+  "author": "Microazz",
+  "license": "UNLICENSED",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "electron-vite dev",
+    "start": "electron-vite preview",
+    "build": "npm run typecheck && electron-vite build",
+    "typecheck": "tsc --noEmit -p tsconfig.node.json && tsc --noEmit -p tsconfig.web.json",
+    "test": "vitest run",
+    "check:layout": "electron-vite build && electron scripts/check-layout.mjs",
+    "dist": "npm run build && electron-builder --win"
+  },
+  "dependencies": {
+    "electron-log": "^5.4.4",
+    "electron-updater": "^6.8.9"
+  },
+  "devDependencies": {
+    "@fontsource/poppins": "^5.3.0",
+    "@types/node": "^24.13.3",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.4",
+    "@types/w3c-web-hid": "^1.0.7",
+    "@vitejs/plugin-react": "^5.2.0",
+    "electron": "^43.3.0",
+    "electron-builder": "^26.15.3",
+    "electron-vite": "^5.0.0",
+    "lucide-react": "^1.31.0",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "typescript": "~5.9.3",
+    "vite": "^7.3.6",
+    "vitest": "^3.2.7",
+    "zustand": "^5.0.14"
+  }
+}

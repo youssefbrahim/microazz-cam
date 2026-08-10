@@ -1,0 +1,369 @@
+.app {
+  display: grid;
+  grid-template-columns: var(--sidebar-width) 1fr;
+  /*
+   * `minmax(0, 1fr)` em vez da linha automática: linha automática cresce com o
+   * conteúdo, a altura deixa de ser limitada e nenhuma área interna consegue
+   * rolar. É a mesma armadilha do `min-height: 0` nos itens de flex.
+   */
+  grid-template-rows: minmax(0, 1fr);
+  height: 100%;
+}
+
+/*
+ * Tela cheia da imagem: a barra lateral sai do documento (não é escondida com
+ * `display: none`, senão a área principal cairia na primeira coluna do grid,
+ * que teria largura zero — e a tela ficava preta). Aqui o grid passa a ter uma
+ * coluna só, e a imagem ocupa o monitor inteiro.
+ */
+.app--fullscreen {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.sidebar__full {
+  width: calc(100% - 16px);
+  margin: 0 8px 4px;
+}
+
+/* --- Barra lateral --- */
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  background: var(--shell-raised);
+  border-right: 1px solid var(--shell-border);
+}
+
+.sidebar__brand {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 18px 16px 14px;
+}
+
+.sidebar__mark {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  background: linear-gradient(140deg, var(--primary), var(--primary-dark));
+  border-radius: 10px;
+  color: #fff;
+}
+
+.sidebar__title {
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: -0.2px;
+  line-height: 1.1;
+}
+
+.sidebar__subtitle {
+  color: var(--shell-text-muted);
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.sidebar__nav {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px;
+}
+
+.navitem {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 10px 12px;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--shell-text-muted);
+  font-size: 13.5px;
+  font-weight: 500;
+  text-align: left;
+  transition: background 0.12s, color 0.12s;
+}
+
+.navitem:hover {
+  background: #ffffff0d;
+  color: var(--shell-text);
+}
+
+.navitem--active {
+  background: var(--primary);
+  color: #fff;
+}
+
+.navitem--active:hover {
+  background: var(--primary);
+  color: #fff;
+}
+
+.navitem__hint {
+  margin-left: auto;
+  opacity: 0.6;
+  font-size: 11px;
+}
+
+.updatenotice {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin: 8px;
+  padding: 10px 12px;
+  border: 1px solid var(--primary);
+  border-radius: var(--radius-sm);
+  background: #2563eb26;
+  color: var(--shell-text);
+  font-size: 12.5px;
+  font-weight: 600;
+  text-align: left;
+}
+
+.updatenotice:hover {
+  background: #2563eb40;
+}
+
+.updatenotice svg {
+  flex: none;
+  color: #93c5fd;
+}
+
+.updatenotice span {
+  display: flex;
+  flex-direction: column;
+}
+
+.updatenotice small {
+  color: var(--shell-text-muted);
+  font-size: 11px;
+  font-weight: 400;
+}
+
+.sidebar__footer {
+  padding: 12px 16px 14px;
+  border-top: 1px solid var(--shell-border);
+  color: var(--shell-text-muted);
+  font-size: 11px;
+}
+
+/* --- Área principal --- */
+
+.main {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/*
+ * Toda tela é filha direta de `.main`. `min-height: 0` é o detalhe que faz a
+ * rolagem existir: sem ele, um item de flex nunca encolhe abaixo do próprio
+ * conteúdo, a altura cresce sem limite e o `overflow` do filho nunca dispara.
+ */
+.screen {
+  flex: 1;
+  min-height: 0;
+  background: var(--bg);
+  color: var(--text);
+}
+
+/** Telas de conteúdo corrido (configurações, manual): rolam por inteiro. */
+.screen--scroll {
+  overflow-y: auto;
+}
+
+/** Telas de duas colunas (pacientes, galeria): cada coluna rola por si. */
+.screen--split {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr);
+  overflow: hidden;
+}
+
+.screen__inner {
+  max-width: 940px;
+  margin: 0 auto;
+  padding: 28px 32px 48px;
+}
+
+.screen__title {
+  margin: 0 0 4px;
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.4px;
+}
+
+.screen__lead {
+  margin: 0 0 24px;
+  color: var(--text-muted);
+  font-size: 14px;
+}
+
+/* --- Peças reutilizáveis --- */
+
+.card {
+  margin-bottom: 16px;
+  padding: 18px 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--card);
+  box-shadow: var(--shadow-card);
+}
+
+.card__title {
+  margin: 0 0 12px;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.section-label {
+  margin: 26px 0 10px;
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+
+.kv {
+  display: grid;
+  grid-template-columns: 190px 1fr;
+  gap: 6px 16px;
+  font-size: 13px;
+}
+
+.kv dt {
+  color: var(--text-muted);
+}
+
+.kv dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+  font-weight: 500;
+}
+
+.badge {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.badge--ok {
+  background: #16a34a26;
+  color: #4ade80;
+}
+
+.badge--err {
+  background: #ef444426;
+  color: #fca5a5;
+}
+
+.btn {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  padding: 9px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--card);
+  color: var(--text);
+  font-size: 13.5px;
+  font-weight: 600;
+}
+
+.btn:hover {
+  background: var(--primary-soft);
+  border-color: #3b82f680;
+}
+
+.btn--primary {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: #fff;
+}
+
+.btn--primary:hover {
+  background: var(--primary-dark);
+  border-color: var(--primary-dark);
+}
+
+.btn-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* --- Aviso dentro de um cartão --- */
+
+.notice {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  margin-top: 16px;
+  padding: 12px 14px;
+  border: 1px solid;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.notice--warn {
+  border-color: #a1620780;
+  background: #f59e0b1f;
+  color: #fcd34d;
+}
+
+.notice svg {
+  flex: none;
+  margin-top: 1px;
+}
+
+.notice code {
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: #00000059;
+  color: var(--text);
+  font-size: 12.5px;
+}
+
+/* --- Aviso do rodapé --- */
+
+.toast {
+  position: absolute;
+  bottom: 22px;
+  left: 50%;
+  z-index: 50;
+  padding: 10px 18px;
+  transform: translateX(-50%);
+  border-radius: 999px;
+  background: #0f172ae6;
+  box-shadow: var(--shadow-pop);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  backdrop-filter: blur(6px);
+}
+
+.toast--error {
+  background: #b91c1ceb;
+}
+
+/* --- Carregando --- */
+
+.boot {
+  display: grid;
+  height: 100%;
+  place-items: center;
+  color: var(--shell-text-muted);
+  font-size: 14px;
+}

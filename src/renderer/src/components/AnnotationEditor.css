@@ -1,0 +1,135 @@
+.editor {
+  display: grid;
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  grid-template-rows: auto 1fr auto;
+  background: #060a12f2;
+  backdrop-filter: blur(3px);
+}
+
+.editor__bar {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--shell-border);
+  background: var(--shell-raised);
+}
+
+.editor__name {
+  max-width: 220px;
+  overflow: hidden;
+  color: var(--shell-text-muted);
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.editor__tools,
+.editor__widths {
+  display: flex;
+  gap: 4px;
+  padding: 0 8px;
+  border-right: 1px solid var(--shell-border);
+  border-left: 1px solid var(--shell-border);
+}
+
+.editor__widths {
+  border-left: 0;
+}
+
+.tool {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--shell-text-muted);
+  place-items: center;
+}
+
+.tool:hover {
+  background: #ffffff0f;
+  color: var(--shell-text);
+}
+
+.tool--on {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: #fff;
+}
+
+.tool--on:hover {
+  background: var(--primary);
+  color: #fff;
+}
+
+.widthdot {
+  display: block;
+  border-radius: 50%;
+  background: currentcolor;
+}
+
+.editor__colors {
+  display: flex;
+  gap: 5px;
+}
+
+.swatch {
+  width: 22px;
+  height: 22px;
+  border: 2px solid #ffffff26;
+  border-radius: 50%;
+}
+
+.swatch--on {
+  border-color: #fff;
+  box-shadow: 0 0 0 2px var(--primary);
+}
+
+.editor__stage {
+  display: grid;
+  min-height: 0;
+  padding: 16px;
+  overflow: hidden;
+  place-items: center;
+}
+
+.editor__frame {
+  position: relative;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.editor__canvas {
+  display: block;
+  max-width: 100%;
+  max-height: calc(100vh - 190px);
+  border-radius: 4px;
+  box-shadow: 0 8px 40px #000000a6;
+  cursor: crosshair;
+  touch-action: none;
+}
+
+.editor__text {
+  position: absolute;
+  min-width: 190px;
+  padding: 4px 8px;
+  transform: translateY(-2px);
+  border: 1px solid var(--primary);
+  border-radius: 6px;
+  background: #0f172af2;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.editor__hint {
+  padding: 10px 16px 14px;
+  border-top: 1px solid var(--shell-border);
+  background: var(--shell-raised);
+  color: var(--shell-text-muted);
+  font-size: 12px;
+  text-align: center;
+}
