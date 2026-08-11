@@ -26,6 +26,7 @@ npm run dev       # abre o programa em modo desenvolvimento
 | `npm run dist` | Gera o instalador em `release/<versão>/` |
 | `npm run check:layout` | Percorre as telas e verifica rolagem, vazamento e tema |
 | `npx electron scripts/check-google.mjs` | Confere se as credenciais entraram no build |
+| `npx electron scripts/check-drive.mjs` | Testa o login do Google até a tela de consentimento |
 | `npx electron scripts/check-runtime.cjs` | Mostra versões e testa o SQLite embutido |
 
 `check:layout` abre o app de verdade, entra em cada tela, enche as áreas roláveis
@@ -55,6 +56,12 @@ envio ao Drive fica indisponível, com aviso na tela de Configurações.
 
 Confira com `npx electron scripts/check-google.mjs` — ele mostra se as
 credenciais entraram no build e se **não** vazaram para o código-fonte.
+
+`check-drive.mjs` vai além: dispara o login de verdade, intercepta o endereço
+que seria aberto no navegador e confere cada parâmetro (escopo, PKCE, `state`,
+retorno em `127.0.0.1`), além de testar se o servidor local que recebe a
+resposta do Google está escutando. Cobre tudo o que não depende de um humano
+clicar em "Permitir".
 
 ---
 
