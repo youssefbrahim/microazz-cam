@@ -9,8 +9,9 @@ import {
   type CameraDevice
 } from './camera'
 import { useApp } from '../store'
+import { decideCameraChange, type CameraStatus } from '@shared/cameraChange'
 
-export type CameraStatus = 'starting' | 'live' | 'disconnected' | 'error'
+export type { CameraStatus }
 
 export interface CameraState {
   cameras: CameraDevice[]
@@ -26,9 +27,11 @@ export interface CameraState {
 /**
  * Mantém a câmera aberta.
  *
- * Cuida das duas coisas que quebram na prática: o cabo USB ser desconectado no
- * meio do exame (a imagem congela e o programa avisa) e o identificador da
- * câmera mudar quando o cabo volta (reconhecemos pelo nome e reabrimos sozinho).
+ * Cuida das três coisas que quebram na prática: o cabo USB ser desconectado no
+ * meio do exame (a imagem congela e o programa avisa), o identificador da
+ * câmera mudar quando o cabo volta (reconhecemos pelo nome e reabrimos sozinho)
+ * e o usuário trocar de microscópio (uma câmera que nunca vimos antes é aberta
+ * sozinha, em vez de exigir que o nome bata com o da câmera anterior).
  */
 export function useCamera(): CameraState {
   const settings = useApp((s) => s.settings)
@@ -48,6 +51,22 @@ export function useCamera(): CameraState {
 
   /** Escolha manual do usuário; vence a câmera salva nas configurações. */
   const requestedDeviceId = useRef<string | null>(null)
+
+  /**
+   * Identificadores já vistos. Serve para separar uma câmera que acabou de ser
+   * conectada de outra que sempre esteve aí — a webcam embutida, tipicamente.
+   */
+  const knownIds = useRef<Set<string> | null>(null)
+
+  /** Guarda a lista e devolve quem apareceu desde a última leitura. */
+  const trackCameras = useCallback((available: CameraDevice[]): CameraDevice[] => {
+    const previous = knownIds.current
+    knownIds.current = new Set(available.map((c) => c.deviceId))
+    setCameras(available)
+    // Na primeira leitura ninguém é novidade: tudo já estava conectado.
+    if (previous === null) return []
+    return available.filter((c) => !previous.has(c.deviceId))
+  }, [])
 
   const wanted = {
     deviceId: settings.cameraDeviceId,
@@ -73,7 +92,7 @@ export function useCamera(): CameraState {
       try {
         const available = await listCameras()
         if (cancelled || myGeneration !== generation.current) return
-        setCameras(available)
+        trackCameras(available)
 
         if (available.length === 0) {
           setStatus('disconnected')
@@ -124,6 +143,9 @@ export function useCamera(): CameraState {
         })
       } catch (err) {
         if (cancelled || myGeneration !== generation.current) return
+        // A tentativa mirada falhou; não deixamos o identificador preso, senão a
+        // próxima tentativa persegue uma câmera que talvez nem esteja mais lá.
+        requestedDeviceId.current = null
         setStatus('error')
         setError(describeCameraError(err))
       }
@@ -143,30 +165,37 @@ export function useCamera(): CameraState {
   useEffect(() => {
     const onDeviceChange = async (): Promise<void> => {
       const available = await listCameras()
-      setCameras(available)
+      const arrived = trackCameras(available)
 
-      const stillThere = available.some(
-        (c) => c.deviceId === current?.deviceId || c.label === current?.label
-      )
+      const action = decideCameraChange({
+        status,
+        available,
+        arrived,
+        current,
+        savedDeviceId: settings.cameraDeviceId,
+        savedLabel: settings.cameraLabel
+      })
 
-      if (status === 'live' && !stillThere) {
-        setStatus('disconnected')
-        setError('A câmera foi desconectada. Reconecte o cabo USB — o programa volta sozinho.')
-        return
-      }
-
-      // A câmera de sempre reapareceu: reabre sem o usuário precisar clicar.
-      if (status !== 'live') {
-        const back = available.some(
-          (c) => c.label === settings.cameraLabel || c.deviceId === settings.cameraDeviceId
-        )
-        if (back || (available.length > 0 && !settings.cameraLabel)) setAttempt((n) => n + 1)
+      switch (action.kind) {
+        case 'lost':
+          setStatus('disconnected')
+          setError('A câmera foi desconectada. Reconecte o cabo USB — o programa volta sozinho.')
+          break
+        case 'open':
+          requestedDeviceId.current = action.deviceId
+          setAttempt((n) => n + 1)
+          break
+        case 'reopen':
+          setAttempt((n) => n + 1)
+          break
+        case 'ignore':
+          break
       }
     }
 
     navigator.mediaDevices.addEventListener('devicechange', onDeviceChange)
     return () => navigator.mediaDevices.removeEventListener('devicechange', onDeviceChange)
-  }, [status, current, settings.cameraLabel, settings.cameraDeviceId])
+  }, [status, current, settings.cameraLabel, settings.cameraDeviceId, trackCameras])
 
   const selectCamera = useCallback((deviceId: string): void => {
     requestedDeviceId.current = deviceId
