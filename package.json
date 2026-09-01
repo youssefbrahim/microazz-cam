@@ -1,6 +1,6 @@
 {
   "name": "microazz-cam",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "Microazz Cam — captura de fotos e vídeos de câmeras de microscópio USB",
   "main": "./out/main/index.js",
   "author": "Microazz",
