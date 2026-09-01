@@ -1,0 +1,414 @@
+/*
+ * Painel de capturas da tela principal (ver MediaOverview.tsx).
+ *
+ * A altura é declarada aqui, por estado, e não deixada por conta do conteúdo:
+ * o painel mora numa linha `auto` do grid da captura, e linha automática cresce
+ * junto com o que tem dentro — com o exame cheio, a grade empurraria a imagem
+ * ao vivo para fora da janela em vez de rolar. Com a altura fixa, quem rola é
+ * o corpo do painel.
+ */
+
+.overview {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  border-top: 1px solid var(--shell-border);
+  background: var(--shell);
+}
+
+/* Miniatura (76) + moldura + folga para a barra de rolagem horizontal. */
+.overview--strip {
+  height: 146px;
+}
+
+/*
+ * A grade acompanha a janela: em monitor pequeno ela não pode comer a imagem,
+ * em monitor grande vale mostrar mais de uma fileira.
+ */
+.overview--grid {
+  height: clamp(230px, 38vh, 440px);
+}
+
+.overview--hidden {
+  grid-template-rows: auto;
+  height: auto;
+}
+
+/* --- Cabeçalho --- */
+
+.overview__head {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  height: 44px;
+  padding: 0 14px;
+}
+
+.overview__toggle {
+  display: flex;
+  flex: none;
+  gap: 7px;
+  align-items: center;
+  padding: 5px 8px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--shell-text);
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+.overview__toggle:hover {
+  background: #ffffff0d;
+}
+
+.overview__chev {
+  color: var(--shell-text-muted);
+  transition: transform 0.15s;
+}
+
+.overview--hidden .overview__chev {
+  transform: rotate(-90deg);
+}
+
+.overview__ctx {
+  min-width: 0;
+  max-width: 300px;
+  overflow: hidden;
+  color: var(--shell-text-muted);
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.overview__spacer {
+  flex: 1;
+}
+
+.ocount {
+  display: inline-flex;
+  flex: none;
+  gap: 5px;
+  align-items: center;
+  padding: 3px 9px;
+  border: 1px solid var(--shell-border);
+  border-radius: 999px;
+  background: var(--field);
+  color: var(--shell-text-muted);
+  font-size: 11.5px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.overview__filters {
+  display: flex;
+  flex: none;
+  gap: 5px;
+}
+
+.ochip {
+  padding: 4px 11px;
+  border: 1px solid var(--shell-border);
+  border-radius: 999px;
+  background: var(--field);
+  color: var(--shell-text-muted);
+  font-size: 11.5px;
+  font-weight: 600;
+}
+
+.ochip:hover {
+  border-color: var(--primary);
+  color: var(--shell-text);
+}
+
+.ochip--on {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: #fff;
+}
+
+/* Alternador tira/grade */
+
+.oseg {
+  display: flex;
+  flex: none;
+  gap: 2px;
+  padding: 2px;
+  border: 1px solid var(--shell-border);
+  border-radius: 9px;
+  background: var(--field);
+}
+
+.oseg button {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  padding: 4px 10px;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--shell-text-muted);
+  font-size: 11.5px;
+  font-weight: 600;
+}
+
+.oseg button:hover {
+  color: var(--shell-text);
+}
+
+.oseg .oseg--on {
+  background: #1e293b;
+  color: var(--shell-text);
+}
+
+.oicon {
+  display: grid;
+  flex: none;
+  place-items: center;
+  height: 28px;
+  padding: 0 8px;
+  border: 1px solid var(--shell-border);
+  border-radius: 8px;
+  background: var(--field);
+  color: var(--shell-text-muted);
+  font-size: 11.5px;
+  font-weight: 600;
+}
+
+.oicon:hover {
+  border-color: var(--primary);
+  color: var(--shell-text);
+}
+
+.oicon--wide {
+  padding: 0 12px;
+}
+
+/* --- Corpo --- */
+
+.overview__body {
+  min-height: 0;
+}
+
+.overview--strip .overview__body {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 0 14px 12px;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.overview--strip .omedia {
+  flex: none;
+  width: 108px;
+}
+
+.overview--strip .omedia__thumb {
+  height: 76px;
+}
+
+/* Na tira o nome não cabe sem roubar altura da imagem; fica no `title`. */
+.overview--strip .omedia__foot {
+  display: none;
+}
+
+/* Na tira o painel não rola na vertical: a fileira é única. */
+.overview--strip .overview__empty {
+  align-self: center;
+}
+
+/*
+ * `grid-auto-rows` fixo, e não fileira automática: o cartão recorta o que
+ * passa da borda (`overflow: hidden`), e fileira automática mede o cartão sem
+ * contar a miniatura recortada — as fileiras nasciam com a altura só da
+ * legenda, a imagem passava por cima da fileira de baixo e a grade nunca
+ * chegava a rolar. A altura é a da miniatura mais a legenda.
+ */
+.overview--grid .overview__body {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(152px, 1fr));
+  grid-auto-rows: 146px;
+  align-content: start;
+  gap: 12px;
+  padding: 0 14px 14px;
+  overflow-y: auto;
+}
+
+.overview--grid .overview__empty {
+  align-self: start;
+}
+
+/*
+ * Altura declarada, e não `aspect-ratio`: a miniatura tira a largura da coluna
+ * do grid, e uma altura que depende da largura não conta na hora de medir a
+ * fileira — a imagem vazava para fora do cartão, por cima da legenda.
+ */
+.overview--grid .omedia__thumb {
+  height: 116px;
+}
+
+.overview__empty {
+  grid-column: 1 / -1;
+  margin: 0;
+  padding-top: 2px;
+  color: var(--shell-text-muted);
+  font-size: 12.5px;
+}
+
+/* --- Miniatura --- */
+
+.omedia {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  margin: 0;
+  overflow: hidden;
+  border: 1px solid var(--shell-border);
+  border-radius: 10px;
+  background: var(--field);
+}
+
+.omedia:hover {
+  border-color: var(--primary);
+}
+
+/* A última captura: o olho volta do microscópio e acha na hora qual é a nova. */
+.omedia--new {
+  border-color: #3b82f6a6;
+  box-shadow: 0 0 0 1px #3b82f640;
+}
+
+.omedia__thumb {
+  position: relative;
+  flex: none;
+  overflow: hidden;
+}
+
+.omedia__open {
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: #0b1220;
+}
+
+.omedia__open img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.omedia__vid {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  place-items: center;
+  color: var(--shell-text-muted);
+}
+
+.omedia__tag {
+  position: absolute;
+  right: 5px;
+  bottom: 5px;
+  z-index: 1;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: #000000b3;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.omedia__drive {
+  display: grid;
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  width: 22px;
+  height: 22px;
+  place-items: center;
+  border-radius: 7px;
+  background: #0f172acc;
+  backdrop-filter: blur(4px);
+}
+
+.omedia__drive--ok {
+  color: var(--success);
+}
+
+.omedia__drive--busy {
+  color: #93c5fd;
+}
+
+.omedia__drive--err {
+  color: var(--danger);
+}
+
+/*
+ * As ferramentas só aparecem no ponteiro ou no foco: a miniatura é pequena e,
+ * com três botões sempre visíveis, sobrava mais botão do que imagem.
+ */
+.omedia__tools {
+  display: flex;
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  gap: 3px;
+  opacity: 0;
+  transition: opacity 0.12s;
+}
+
+.omedia:hover .omedia__tools,
+.omedia:focus-within .omedia__tools {
+  opacity: 1;
+}
+
+.omedia__tools button {
+  display: grid;
+  width: 24px;
+  height: 24px;
+  place-items: center;
+  border: 0;
+  border-radius: 7px;
+  background: #0f172ad9;
+  color: #cbd5e1;
+  backdrop-filter: blur(4px);
+}
+
+.omedia__tools button:hover {
+  background: var(--primary);
+  color: #fff;
+}
+
+.omedia__tools .omedia__danger:hover {
+  background: var(--danger);
+  color: #450a0a;
+}
+
+.omedia__foot {
+  display: flex;
+  gap: 6px;
+  align-items: baseline;
+  padding: 6px 8px;
+}
+
+.omedia__name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--shell-text-muted);
+  font-size: 10.5px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.omedia__time {
+  flex: none;
+  color: var(--shell-text-muted);
+  font-size: 10.5px;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.75;
+}

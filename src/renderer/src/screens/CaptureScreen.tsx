@@ -29,6 +29,7 @@ import {
 } from '../lib/transform'
 import { ControlsPanel } from '../components/ControlsPanel'
 import { AnnotationEditor } from '../components/AnnotationEditor'
+import { MediaOverview } from '../components/MediaOverview'
 import { PatientPicker } from '../components/PatientPicker'
 import { DriveBadge } from '../components/DriveSettings'
 import { onAction } from '../lib/actions'
@@ -106,13 +107,36 @@ export function CaptureScreen(): React.JSX.Element {
 
   // --- Contexto (paciente/exame) e capturas recentes ---
 
-  // A tira mostra só as capturas do exame atual. Ao trocar de paciente, as
+  // O painel mostra só as capturas do exame atual. Ao trocar de paciente, as
   // fotos do anterior somem da tela — questão de privacidade, não de estética.
   useEffect(() => {
     const examId = context?.examId
     if (examId === undefined) return
     void window.microazz.media.forExam(examId).then(setRecent)
   }, [context?.examId])
+
+  /** Cabeçalho do painel de capturas: para onde os arquivos estão indo. */
+  const contextLabel =
+    !context || context.isLoose
+      ? 'Capturas avulsas'
+      : `${settings.privacyMode ? '•••••' : context.patientName} · ${context.examTitle}`
+
+  // Excluir daqui evita a ida à galeria só para descartar a foto que saiu
+  // tremida. O arquivo vai para a Lixeira do Windows, então tem volta.
+  const removeMedia = useCallback(
+    (item: MediaItem): void => {
+      void window.microazz.media
+        .remove(item.id)
+        .then(() => {
+          setRecent((items) => items.filter((m) => m.id !== item.id))
+          notify(`"${item.fileName}" foi para a Lixeira do Windows.`)
+        })
+        .catch((err: unknown) => {
+          notify(`Não foi possível excluir. ${errorText(err)}`, 'error')
+        })
+    },
+    [notify]
+  )
 
   // --- Liga o sinal da câmera ao elemento de vídeo escondido ---
 
@@ -269,7 +293,7 @@ export function CaptureScreen(): React.JSX.Element {
 
       setFlash((n) => n + 1)
       if (settings.shutterSound) playShutter()
-      setRecent((items) => [media, ...items].slice(0, 24))
+      setRecent((items) => [media, ...items])
       return media
     } catch (err) {
       notify(`Não foi possível salvar a foto. ${errorText(err)}`, 'error')
@@ -336,7 +360,7 @@ export function CaptureScreen(): React.JSX.Element {
     try {
       const media = await rec.stop()
       playRecordingTone(false)
-      setRecent((items) => [media, ...items].slice(0, 24))
+      setRecent((items) => [media, ...items])
       notify(`Vídeo salvo: ${media.fileName}`)
     } catch (err) {
       notify(`Falha ao encerrar a gravação. ${errorText(err)}`, 'error')
@@ -716,42 +740,13 @@ export function CaptureScreen(): React.JSX.Element {
       )}
 
       {!cinema && (
-      <div className="strip">
-        {recent.length === 0 ? (
-          <span className="strip__empty">
-            As capturas deste exame aparecem aqui assim que você fotografar.
-          </span>
-        ) : (
-          recent.map((item) => (
-            <button
-              key={item.id}
-              type="button"
-              className="thumb"
-              title={
-                item.kind === 'video'
-                  ? `${item.fileName} — clique para assistir`
-                  : `${item.fileName} — clique para anotar`
-              }
-              onClick={() => {
-                // Vídeo abre no player do Windows; foto abre o editor de anotações.
-                if (item.kind === 'video') void window.microazz.app.openPath(item.filePath)
-                else setAnnotating(item)
-              }}
-            >
-              {item.kind === 'video' ? (
-                <span className="thumb__video">
-                  <Video size={20} />
-                </span>
-              ) : (
-                <img src={window.microazz.media.url(item.filePath)} alt={item.fileName} />
-              )}
-              {item.kind === 'video' && item.durationMs && (
-                <span className="thumb__tag">{formatElapsed(item.durationMs)}</span>
-              )}
-            </button>
-          ))
-        )}
-      </div>
+        <MediaOverview
+          items={recent}
+          contextLabel={contextLabel}
+          folder={context?.folder}
+          onAnnotate={setAnnotating}
+          onRemove={removeMedia}
+        />
       )}
       </div>
 
@@ -765,7 +760,7 @@ export function CaptureScreen(): React.JSX.Element {
         <AnnotationEditor
           media={annotating}
           onClose={() => setAnnotating(null)}
-          onSaved={(created) => setRecent((items) => [created, ...items].slice(0, 24))}
+          onSaved={(created) => setRecent((items) => [created, ...items])}
         />
       )}
     </div>

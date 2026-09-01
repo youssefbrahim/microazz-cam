@@ -345,7 +345,7 @@ export function examMediaCounts(patientId: number): Record<number, { photos: num
   return counts
 }
 
-/** Últimas capturas de todos os exames — usada pela tira de miniaturas da captura. */
+/** Últimas capturas de todos os exames — usada pelo painel de capturas da tela principal. */
 export function listRecentMedia(limit = 24): MediaItem[] {
   return queryAll<MediaRow>(
     'SELECT * FROM media ORDER BY created_at DESC, id DESC LIMIT ?',

@@ -38,11 +38,32 @@ export function ManualScreen(): React.JSX.Element {
           </p>
         </div>
 
+        <div className="section-label">Painel de capturas</div>
+        <div className="card">
+          <p style={{ marginTop: 0, fontSize: 13.5, lineHeight: 1.65 }}>
+            No rodapé da tela de captura fica tudo o que já foi capturado{' '}
+            <strong>neste exame</strong>, com a contagem de fotos e vídeos. Ele tem dois formatos,
+            no canto direito: <strong>Tira</strong>, uma faixa que ocupa pouco espaço, e{' '}
+            <strong>Grade</strong>, a visão geral para conferir o conjunto antes de encerrar o
+            atendimento. Clicando em <strong>Capturas</strong> o painel fecha e a imagem do
+            microscópio ganha o espaço; ele reabre no mesmo formato da próxima vez.
+          </p>
+          <p
+            style={{ marginBottom: 0, fontSize: 13.5, color: 'var(--text-muted)', lineHeight: 1.65 }}
+          >
+            Clique numa foto para ampliar com zoom; passe o mouse por cima da miniatura para{' '}
+            <strong>anotar</strong>, <strong>mostrar no Explorer</strong> ou{' '}
+            <strong>mandar para a Lixeira</strong>. A nuvem no canto indica o envio ao Google Drive.
+            Ao trocar de paciente, o painel se esvazia — as capturas do anterior não ficam à vista
+            de quem entrar na sala.
+          </p>
+        </div>
+
         <div className="section-label">Imagem em tela cheia</div>
         <div className="card">
           <p style={{ margin: 0, fontSize: 13.5, lineHeight: 1.65 }}>
             O botão <strong>Imagem em tela cheia</strong>, no rodapé do menu, deixa só a imagem do
-            microscópio ocupando o monitor inteiro — sem menu, sem botões, sem miniaturas. Os
+            microscópio ocupando o monitor inteiro — sem menu, sem botões, sem capturas. Os
             controles de foto, vídeo e congelar flutuam sobre a imagem e{' '}
             <strong>somem sozinhos</strong> depois de três segundos parados, junto com o cursor;
             basta mexer o mouse para trazê-los de volta. Os atalhos de teclado e o pedal continuam

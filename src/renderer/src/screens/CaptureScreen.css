@@ -130,7 +130,7 @@
 /* --- Tela cheia da imagem --- */
 
 /*
- * Sem a barra superior, os controles e as miniaturas, sobra um filho só no
+ * Sem a barra superior, os controles e o painel de capturas, sobra um filho só no
  * grid — e ele cairia na primeira linha, que é de altura automática. Declarar
  * a linha única aqui é o que faz a imagem ocupar a tela inteira em vez de
  * encolher para o tamanho do próprio conteúdo.
@@ -423,65 +423,4 @@
 .ctl--primary .ctl__key,
 .ctl--danger .ctl__key {
   background: #00000033;
-}
-
-/* --- Tira de miniaturas --- */
-
-.strip {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  height: 88px;
-  padding: 10px 16px;
-  overflow-x: auto;
-  overflow-y: hidden;
-  border-top: 1px solid var(--shell-border);
-  background: var(--shell);
-}
-
-.strip__empty {
-  color: var(--shell-text-muted);
-  font-size: 12.5px;
-}
-
-.thumb {
-  position: relative;
-  flex: none;
-  width: 92px;
-  height: 68px;
-  padding: 0;
-  overflow: hidden;
-  border: 1px solid var(--shell-border);
-  border-radius: 8px;
-  background: #0f1729;
-}
-
-.thumb:hover {
-  border-color: var(--primary);
-}
-
-.thumb img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.thumb__video {
-  display: grid;
-  width: 100%;
-  height: 100%;
-  place-items: center;
-  color: var(--shell-text-muted);
-}
-
-.thumb__tag {
-  position: absolute;
-  right: 4px;
-  bottom: 4px;
-  padding: 1px 6px;
-  border-radius: 4px;
-  background: #000000b3;
-  color: #fff;
-  font-size: 10px;
-  font-weight: 700;
 }

@@ -147,7 +147,7 @@ app.whenReady().then(async () => {
           barraLateral: visivel('.sidebar'),
           barraSuperior: visivel('.capture__top'),
           controles: visivel('.controls'),
-          miniaturas: visivel('.strip'),
+          painelCapturas: visivel('.overview'),
           painelAjustes: visivel('.panel'),
           controlesFlutuantes: !!document.querySelector('.cine__bar'),
           imagem: r ? { w: Math.round(r.width), h: Math.round(r.height) } : null,

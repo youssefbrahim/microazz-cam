@@ -48,6 +48,12 @@ export interface Settings {
   privacyMode: boolean
   /** Som de obturador ao fotografar. */
   shutterSound: boolean
+  /**
+   * Como o painel de capturas aparece na tela principal: `strip` (tira),
+   * `grid` (grade) ou `hidden` (só o cabeçalho). Texto livre porque vem do
+   * banco; a interface trata o desconhecido como `strip`.
+   */
+  overviewMode: string
   /** Intervalo (segundos) e limite do timelapse. */
   timelapseInterval: number
   timelapseLimit: number
@@ -82,6 +88,7 @@ export const DEFAULT_SETTINGS: Settings = {
   swSaturation: 1,
   privacyMode: false,
   shutterSound: true,
+  overviewMode: 'strip',
   timelapseInterval: 30,
   timelapseLimit: 0,
   driveFolderName: 'Microazz Cam',
