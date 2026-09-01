@@ -102,3 +102,27 @@
 .wizard__row > span:first-child {
   flex: 1;
 }
+
+/*
+ * Aviso de pedal-teclado. Verde, e não o cinza dos outros avisos: aqui não é
+ * uma dica que pode ser ignorada — é a resposta, e o assistente inteiro deixou
+ * de ser necessário.
+ */
+.wizard__keyboard {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 14px;
+  padding: 12px 14px;
+  border: 1px solid #16a34a80;
+  border-radius: var(--radius-sm);
+  background: #16a34a1f;
+  color: var(--shell-text);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.wizard__keyboard > span {
+  color: var(--shell-text-muted);
+  font-size: 12.5px;
+}

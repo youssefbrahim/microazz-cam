@@ -1,7 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Check, Gamepad2, Usb, X } from 'lucide-react'
 import { DEFAULT_PEDAL, type PedalButtonBinding, type PedalConfig } from '@shared/pedal'
-import { SHORTCUT_LABELS, type ShortcutAction } from '@shared/shortcuts'
+import {
+  describeAccelerator,
+  eventToAccelerator,
+  isValidAccelerator,
+  SHORTCUT_LABELS,
+  type ShortcutAction
+} from '@shared/shortcuts'
 import { diffHidReport } from '../lib/pedal'
 import { useApp } from '../store'
 import './PedalWizard.css'
@@ -26,6 +32,18 @@ export function PedalWizard({ onClose }: { onClose: () => void }): React.JSX.Ele
   const [learning, setLearning] = useState<ShortcutAction | null>(null)
   const [detected, setDetected] = useState('')
 
+  /*
+   * A ação que está sendo aprendida também vai para uma ref.
+   *
+   * O ouvinte do HID é preso ao dispositivo uma vez só, quando o usuário
+   * conecta — e naquele instante ninguém está aprendendo nada. Lendo o estado
+   * pela closure, o ouvinte preso ficava com `learning` valendo nulo para
+   * sempre: o sinal do pedal chegava, aparecia em "último sinal recebido" e era
+   * descartado logo em seguida. Era o pedal que "não ensinava nada".
+   */
+  const learningRef = useRef<ShortcutAction | null>(null)
+  learningRef.current = learning
+
   // --- Modo joystick ---
 
   const gamepadPrev = useRef(new Map<string, boolean>())
@@ -49,8 +67,12 @@ export function PedalWizard({ onClose }: { onClose: () => void }): React.JSX.Ele
 
     raf = requestAnimationFrame(poll)
     return () => cancelAnimationFrame(raf)
+    // `learning` não entra: quem lê a ação do momento é `learningRef`, e
+    // recomeçar o laço a cada clique em "Aprender" perderia o estado anterior
+    // dos botões — o primeiro quadro depois do reinício veria o pedal já
+    // pisado como se fosse uma descida nova.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mode, learning])
+  }, [mode])
 
   // --- Modo HID puro ---
 
@@ -72,8 +94,10 @@ export function PedalWizard({ onClose }: { onClose: () => void }): React.JSX.Ele
       const id = diffHidReport(event.reportId, before, bytes)
       if (id) captureButton(id)
     },
+    // Sem dependências de propósito: este ouvinte fica preso ao dispositivo do
+    // começo ao fim, e o que ele precisa saber do momento vem de `learningRef`.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [learning]
+    []
   )
 
   const connectHid = useCallback(async (): Promise<void> => {
@@ -116,12 +140,13 @@ export function PedalWizard({ onClose }: { onClose: () => void }): React.JSX.Ele
 
   function captureButton(id: string): void {
     setDetected(id)
-    if (!learning) return
+    const action = learningRef.current
+    if (!action) return
 
     setConfig((current) => {
       const buttons: PedalButtonBinding[] = current.buttons
-        .filter((b) => b.id !== id && b.action !== learning)
-        .concat({ id, action: learning })
+        .filter((b) => b.id !== id && b.action !== action)
+        .concat({ id, action })
       return { ...current, mode: current.mode === 'none' ? 'gamepad' : current.mode, buttons }
     })
     setLearning(null)
@@ -145,9 +170,27 @@ export function PedalWizard({ onClose }: { onClose: () => void }): React.JSX.Ele
     })
   }, [notify, onClose, updateSettings])
 
+  /*
+   * Pedal que envia tecla dentro do assistente.
+   *
+   * É o tipo mais comum, e o assistente é justamente o lugar errado para ele:
+   * nem joystick nem HID enxergam uma tecla, então a tela ficava muda e a
+   * impressão era de que o programa não aprendia nada. Se chegar uma tecla
+   * aqui, dizemos o que ela é e para onde ir.
+   */
+  const [keyboardPedal, setKeyboardPedal] = useState('')
+
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent): void => {
-      if (event.key === 'Escape') onClose()
+      if (event.key === 'Escape') {
+        onClose()
+        return
+      }
+
+      const accelerator = eventToAccelerator(event)
+      if (accelerator && isValidAccelerator(accelerator)) {
+        setKeyboardPedal(describeAccelerator(accelerator))
+      }
     }
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
@@ -169,6 +212,18 @@ export function PedalWizard({ onClose }: { onClose: () => void }): React.JSX.Ele
         </div>
 
         <div className="wizard__body">
+          {keyboardPedal && (
+            <div className="wizard__keyboard">
+              <strong>Este pedal envia a tecla {keyboardPedal}.</strong>
+              <span>
+                Ele é um pedal-teclado — o tipo mais comum — e não precisa deste assistente. Feche
+                aqui, clique na tecla ao lado da ação desejada em <strong>Atalhos de teclado</strong>{' '}
+                e pise no pedal: o programa grava a tecla na hora. Um pedal com dois botões manda
+                uma tecla diferente em cada um, então dá para colocar foto num e vídeo no outro.
+              </span>
+            </div>
+          )}
+
           {mode === 'choose' && (
             <>
               <p className="hint hint--dark">

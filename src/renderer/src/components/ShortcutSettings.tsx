@@ -52,8 +52,25 @@ export function ShortcutSettings(): React.JSX.Element {
         return
       }
 
+      // Modificador sozinho não é recusa: o usuário ainda está montando a
+      // combinação e a tecla de verdade vem no próximo evento.
+      if (['Control', 'Alt', 'Shift', 'Meta'].includes(event.key)) return
+
       const accelerator = eventToAccelerator(event)
-      if (!accelerator || !isValidAccelerator(accelerator)) return
+      if (!accelerator || !isValidAccelerator(accelerator)) {
+        // Ficar em silêncio aqui era o pior dos mundos: o campo seguia em
+        // "Aperte a tecla…" e não dava para saber se o programa tinha recebido
+        // algo e recusado, ou se não tinha recebido nada — a dúvida exata de
+        // quem está com um pedal na mão.
+        notify(
+          `O programa não reconhece essa tecla (${event.code || event.key}). ` +
+            'Se for um pedal programável, configure-o para uma tecla comum — F13 a F24 são as ' +
+            'mais seguras, porque nenhum outro programa as usa.',
+          'error'
+        )
+        setRecording(null)
+        return
+      }
 
       const taken = shortcuts.find((s) => s.accelerator === accelerator && s.action !== recording)
       if (taken) {
