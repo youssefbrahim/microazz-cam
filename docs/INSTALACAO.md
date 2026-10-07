@@ -6,9 +6,11 @@ Para o computador do consultório. Leva uns 5 minutos.
 
 ## 1. Baixar
 
-Abra o endereço abaixo e clique no arquivo **Microazz-Cam-Setup-1.0.0.exe**:
+Pela página do programa no site da Microazz, **microazz.com.br/microazz-cam**,
+botão **Baixar para Windows**. Ou direto por este endereço, que sempre baixa a
+versão mais recente:
 
-**https://github.com/youssefbrahim/microazz-cam/releases/latest**
+**https://github.com/youssefbrahim/microazz-cam/releases/latest/download/Microazz-Cam-Setup.exe**
 
 O download tem cerca de 96 MB.
 

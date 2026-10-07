@@ -29,6 +29,11 @@ win:
       arch: [x64]
 
 nsis:
+  # Nome fixo, sem a versão: o site da Microazz aponta para
+  # releases/latest/download/Microazz-Cam-Setup.exe, que só funciona se o nome
+  # não mudar entre versões. A atualização automática não depende do nome —
+  # ela lê o latest.yml, que registra o arquivo como ele for.
+  artifactName: Microazz-Cam-Setup.${ext}
   oneClick: false
   perMachine: false
   allowToChangeInstallationDirectory: true
